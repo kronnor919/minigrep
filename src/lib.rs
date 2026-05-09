@@ -1,7 +1,10 @@
 use std::env;
 use std::fs;
 use std::io;
+use std::process;
 use thiserror::Error;
+
+pub const VERSION: &str = "1.1.0";
 
 #[derive(Error, Debug)]
 pub enum AppError {
@@ -19,13 +22,14 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &Vec<String>) -> Result<Config, AppError> {
-        if args.len() < 3 {
+    pub fn build(args: &[String]) -> Result<Config, AppError> {
+        // [query] [filepath]
+        if args.len() < 2 {
             return Err(AppError::MissingArgs());
         }
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        let query = args[0].clone();
+        let file_path = args[1].clone();
         let ignore_case = env::var("IGNORE_CASE").is_ok();
 
         Ok(Config {
@@ -78,4 +82,32 @@ pub fn run(config: Config) -> Result<Vec<String>, AppError> {
     };
 
     Ok(results)
+}
+
+fn print_help() {
+    println!("Usage: minigrep [OPTIONS] QUERY FILEPATH");
+    println!("Options:");
+    println!("    --help         Show this help text");
+    println!("    --version      Show minigrep's version");
+}
+
+pub fn handle_options(ops: &Vec<&String>) -> () {
+    for op in ops {
+        match op.as_str() {
+            "--help" => {
+                print_help();
+                process::exit(0);
+            }
+
+            "--version" => {
+                println!("Minigrep v{VERSION}");
+                process::exit(0);
+            }
+
+            _ => {
+                eprintln!("Unrecognized option: {op}");
+                process::exit(1);
+            }
+        }
+    }
 }
