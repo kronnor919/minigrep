@@ -31,7 +31,6 @@ fn main() {
     // Run search
     match run(config) {
         Ok(res) => {
-            println!("");
             for line in res {
                 println!("{line}");
             }
