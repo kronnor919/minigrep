@@ -23,8 +23,19 @@ export IGNORE_CASE=1
 
 ## Installation
 
+### Via `curl`
+
 Run:
 
 ```bash
 curl -sL <https://raw.githubusercontent.com/kronnor919/minigrep/main/install.sh> | sudo bash
 ```
+
+### Manual
+
+- Go to the latest [release](https://github.com/kronnor919/minigrep/releases/latest) on GitHub
+- Scroll to the bottom
+- Download the .tar.gz
+- Unzip it using: `tar -xzf <filename>`
+- Move it to a location recognized by the `PATH`. Example: `sudo mv <binary> /usr/local/bin/`
+- Test it with `minigrep --version`
