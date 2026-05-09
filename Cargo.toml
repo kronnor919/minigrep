@@ -1,0 +1,18 @@
+[package]
+name = "minigrep"
+version = "1.0.0"
+edition = "2024"
+
+[[bin]]
+name = "minigrep"
+path = "src/main.rs"
+
+[dependencies]
+thiserror = "1.0"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
