@@ -20,3 +20,11 @@ By default, Minigrep will distinguish between uppercase and lowercase letters. I
 # Linux
 export IGNORE_CASE=1
 ```
+
+## Installation
+
+Run:
+
+```bash
+curl -sL <https://raw.githubusercontent.com/kronnor919/minigrep/main/install.sh> | sudo bash
+```
