@@ -5,8 +5,8 @@ use std::process;
 use thiserror::Error;
 
 pub const VERSION: &str = "1.1.0";
-const GREEN: &str = "\x1b[0;32m";
-const NC: &str = "\x1b[0m"; // No Color
+pub const GREEN: &str = "\x1b[0;32m";
+pub const NC: &str = "\x1b[0m"; // No Color
 
 #[derive(Error, Debug)]
 pub enum AppError {
