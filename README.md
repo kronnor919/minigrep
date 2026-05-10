@@ -28,7 +28,7 @@ export IGNORE_CASE=1
 Run:
 
 ```bash
-curl -sL <https://raw.githubusercontent.com/kronnor919/minigrep/main/install.sh> | sudo bash
+curl -sL https://raw.githubusercontent.com/kronnor919/minigrep/main/install.sh | sudo bash
 ```
 
 ### Manual
