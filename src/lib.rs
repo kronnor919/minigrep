@@ -78,11 +78,11 @@ fn read_lines(file_path: String) -> Result<Vec<String>, io::Error> {
 fn format_result(mut results: Vec<String>, query: &String) -> Vec<String> {
     for line in results.iter_mut() {
         if let Some(start_idx) = line.find(query) {
-        let end_idx = start_idx + query.len();
-        
-        line.insert_str(end_idx, NC);
-        line.insert_str(start_idx, GREEN);
-    }
+            let end_idx = start_idx + query.len();
+
+            line.insert_str(end_idx, NC);
+            line.insert_str(start_idx, GREEN);
+        }
     }
 
     results
@@ -124,5 +124,75 @@ pub fn handle_options(ops: &Vec<&String>) -> () {
                 process::exit(1);
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{GREEN, NC, format_result, search, search_case_insensitive};
+
+    fn test_content() -> Vec<String> {
+        vec![
+            "A word in my life;\n",
+            "Another word in my dead.\n",
+            "Words are abstract.\n",
+            "Maybe I don't understand it.",
+        ]
+        .iter()
+        .map(|line| line.to_string())
+        .collect()
+    }
+
+    #[test]
+    fn test_search_sensitive() {
+        let query: &String = &String::from("word");
+        let content_lines = test_content();
+
+        let results: Vec<String> = search(query, content_lines);
+
+        let expected: Vec<String> = vec!["A word in my life;\n", "Another word in my dead.\n"]
+            .iter()
+            .map(|line| line.to_string())
+            .collect();
+
+        assert_eq!(results, expected);
+    }
+
+    #[test]
+    fn test_search_insensitive() {
+        let query = &String::from("word");
+        let content_lines = test_content();
+
+        let results = search_case_insensitive(query, content_lines);
+
+        let expected: Vec<String> = vec![
+            "A word in my life;\n",
+            "Another word in my dead.\n",
+            "Words are abstract.\n",
+        ]
+        .iter()
+        .map(|line| line.to_string())
+        .collect();
+
+        assert_eq!(results, expected);
+    }
+
+    #[test]
+    fn test_format_lines() {
+        let query = &String::from("abstract");
+        let content_lines = test_content();
+        dbg!(&content_lines);
+
+        let formated_lines: Vec<String> = format_result(content_lines, query);
+        dbg!(&formated_lines);
+
+        let expected: Vec<String> = vec![
+            "A word in my life;\n".to_string(),
+            "Another word in my dead.\n".to_string(),
+            format!("Words are {GREEN}abstract{NC}.\n"),
+            "Maybe I don't understand it.".to_string(),
+        ];
+
+        assert_eq!(formated_lines, expected);
     }
 }
