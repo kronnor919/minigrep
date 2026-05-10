@@ -5,6 +5,8 @@ use std::process;
 use thiserror::Error;
 
 pub const VERSION: &str = "1.1.0";
+const GREEN: &str = "\x1b[0;32m";
+const NC: &str = "\x1b[0m"; // No Color
 
 #[derive(Error, Debug)]
 pub enum AppError {
@@ -40,10 +42,10 @@ impl Config {
     }
 }
 
-fn search(query: String, content_lines: Vec<String>) -> Vec<String> {
+fn search(query: &String, content_lines: Vec<String>) -> Vec<String> {
     let mut results: Vec<String> = Vec::new();
     for line in content_lines {
-        if line.contains(&query) {
+        if line.contains(query) {
             results.push(line);
         }
     }
@@ -51,7 +53,7 @@ fn search(query: String, content_lines: Vec<String>) -> Vec<String> {
     results
 }
 
-fn search_case_insensitive(query: String, content_lines: Vec<String>) -> Vec<String> {
+fn search_case_insensitive(query: &String, content_lines: Vec<String>) -> Vec<String> {
     let mut results: Vec<String> = Vec::new();
     let query = query.to_lowercase();
 
@@ -73,15 +75,27 @@ fn read_lines(file_path: String) -> Result<Vec<String>, io::Error> {
     Ok(content_lines)
 }
 
+fn format_result(mut results: Vec<String>, query: &String) -> Vec<String> {
+    for line in results.iter_mut() {
+        let start_idx = line.find(query).unwrap();
+        let end_idx = start_idx + query.len();
+        
+        line.insert_str(end_idx, NC);
+        line.insert_str(start_idx, GREEN);
+    }
+
+    results
+}
+
 pub fn run(config: Config) -> Result<Vec<String>, AppError> {
     let file_lines = read_lines(config.file_path)?;
 
     let results: Vec<String> = match config.ignore_case {
-        true => search_case_insensitive(config.query, file_lines),
-        false => search(config.query, file_lines),
+        true => search_case_insensitive(&config.query, file_lines),
+        false => search(&config.query, file_lines),
     };
 
-    Ok(results)
+    Ok(format_result(results, &config.query))
 }
 
 fn print_help() {
