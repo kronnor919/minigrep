@@ -77,11 +77,12 @@ fn read_lines(file_path: String) -> Result<Vec<String>, io::Error> {
 
 fn format_result(mut results: Vec<String>, query: &String) -> Vec<String> {
     for line in results.iter_mut() {
-        let start_idx = line.find(query).unwrap();
+        if let Some(start_idx) = line.find(query) {
         let end_idx = start_idx + query.len();
         
         line.insert_str(end_idx, NC);
         line.insert_str(start_idx, GREEN);
+    }
     }
 
     results
